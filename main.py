@@ -47,6 +47,7 @@ def save():
         try:
             with open("data.json","r") as data_file:
                 data = json.load(data_file)
+               
                 
         except FileNotFoundError:
             with open("data.json","w") as data_file:
@@ -60,8 +61,26 @@ def save():
         finally:
             website_input.delete(0,END)
             password_input.delete(0,END)
+          
 
-    
+# ---------------------------- SEARCH PASSWORD ------------------------------- #
+def find_password():
+    website_name = website_input.get()
+    try:
+        with open("data.json","r") as data_file:
+            data= json.load(data_file)
+
+        try:
+            email_name = data[website_name]["email"]
+            password_name = data[website_name]["password"]
+            if website_name in data:
+                messagebox.showinfo(title = website_name,message=f"Email:{email_name} \n Password:{password_name}") 
+        except KeyError:
+            messagebox.showinfo(title="Not Found",message="Website details not found!!")
+    except FileNotFoundError:
+        messagebox.showinfo(title="Error",message="No Data File Found")
+        
+
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.title("Password Manager")
@@ -72,12 +91,12 @@ logo = PhotoImage(file = "logo.png")
 canvas.create_image(100,100,image = logo)
 canvas.grid(row = 0,column=1)
 
-website_input = Entry(width=35)
-website_input.grid(row=1,column=1,columnspan=2)
+website_input = Entry(width=21)
+website_input.grid(row=1,column=1)
 website_input.focus()
 
-email_input = Entry(width=35)
-email_input.grid(row = 2,column=1,columnspan=2)
+email_input = Entry(width=30)
+email_input.grid(row = 2,column=1)
 email_input.insert(0,"username@gmail.com")
 
 password_input = Entry(width=21 )
@@ -97,5 +116,8 @@ password_label.grid(row = 3,column=0)
 
 gen_password_button = Button(text="Generate Password",command=generate_password)
 gen_password_button.grid(row = 3,column=2)
+
+search_button = Button(text = "Search",command=find_password)
+search_button.grid(row=1,column=2)
 
 window.mainloop()
